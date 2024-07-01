@@ -1,20 +1,10 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/api/health": {
-      "get": {
-        "operationId": "ApiController_health",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/asset/upload": {
+    "/v1/asset/upload": {
       "put": {
-        "operationId": "ApiController_assetUpload",
+        "operationId": "AssetController_assetUpload",
+        "summary": "Upload Asset Files",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -38,12 +28,16 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "v1/asset"
+        ]
       }
     },
-    "/api/content/{userDsnpId}/broadcast": {
+    "/v1/content/{userDsnpId}/broadcast": {
       "post": {
-        "operationId": "ApiController_broadcast",
+        "operationId": "ContentController_broadcast",
+        "summary": "Create DSNP Broadcast for User",
         "parameters": [
           {
             "name": "userDsnpId",
@@ -75,12 +69,16 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "v1/content"
+        ]
       }
     },
-    "/api/content/{userDsnpId}/reply": {
+    "/v1/content/{userDsnpId}/reply": {
       "post": {
-        "operationId": "ApiController_reply",
+        "operationId": "ContentController_reply",
+        "summary": "Create DSNP Reply for User",
         "parameters": [
           {
             "name": "userDsnpId",
@@ -112,12 +110,16 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "v1/content"
+        ]
       }
     },
-    "/api/content/{userDsnpId}/reaction": {
+    "/v1/content/{userDsnpId}/reaction": {
       "post": {
-        "operationId": "ApiController_reaction",
+        "operationId": "ContentController_reaction",
+        "summary": "Create DSNP Reaction for User",
         "parameters": [
           {
             "name": "userDsnpId",
@@ -149,12 +151,16 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "v1/content"
+        ]
       }
     },
-    "/api/content/{userDsnpId}": {
+    "/v1/content/{userDsnpId}": {
       "put": {
-        "operationId": "ApiController_update",
+        "operationId": "ContentController_update",
+        "summary": "Update DSNP Content for User",
         "parameters": [
           {
             "name": "userDsnpId",
@@ -186,10 +192,14 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "v1/content"
+        ]
       },
       "delete": {
-        "operationId": "ApiController_delete",
+        "operationId": "ContentController_delete",
+        "summary": "Delete DSNP Content for User",
         "parameters": [
           {
             "name": "userDsnpId",
@@ -221,12 +231,16 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "v1/content"
+        ]
       }
     },
-    "/api/profile/{userDsnpId}": {
+    "/v1/profile/{userDsnpId}": {
       "put": {
-        "operationId": "ApiController_profile",
+        "operationId": "ProfileController_profile",
+        "summary": "Update a user's Profile",
         "parameters": [
           {
             "name": "userDsnpId",
@@ -258,7 +272,145 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "v1/profile"
+        ]
+      }
+    },
+    "/healthz": {
+      "get": {
+        "operationId": "HealthController_healthz",
+        "summary": "Check the health status of the service",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is healthy"
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/livez": {
+      "get": {
+        "operationId": "HealthController_livez",
+        "summary": "Check the live status of the service",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is live"
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/readyz": {
+      "get": {
+        "operationId": "HealthController_readyz",
+        "summary": "Check the ready status of the service",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is ready"
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/dev/request/{jobId}": {
+      "get": {
+        "operationId": "DevelopmentController_requestJob",
+        "summary": "Get a Job given a jobId",
+        "description": "ONLY enabled when ENVIRONMENT=\"dev\".",
+        "parameters": [
+          {
+            "name": "jobId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "dev"
+        ]
+      }
+    },
+    "/dev/asset/{assetId}": {
+      "get": {
+        "operationId": "DevelopmentController_getAsset",
+        "summary": "Get an Asset given an assetId",
+        "description": "ONLY enabled when ENVIRONMENT=\"dev\".",
+        "parameters": [
+          {
+            "name": "assetId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "dev"
+        ]
+      }
+    },
+    "/dev/dummy/announcement/{queueType}/{count}": {
+      "post": {
+        "operationId": "DevelopmentController_populate",
+        "summary": "Create dummy announcement data",
+        "description": "ONLY enabled when ENVIRONMENT=\"dev\".",
+        "parameters": [
+          {
+            "name": "queueType",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "count",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "dev"
+        ]
       }
     }
   },
@@ -296,7 +448,9 @@
             }
           }
         },
-        "required": ["files"]
+        "required": [
+          "files"
+        ]
       },
       "UploadResponseDto": {
         "type": "object",
@@ -308,7 +462,9 @@
             }
           }
         },
-        "required": ["assetIds"]
+        "required": [
+          "assetIds"
+        ]
       },
       "AssetReferenceDto": {
         "type": "object",
@@ -330,14 +486,21 @@
             "pattern": "DURATION_REGEX"
           }
         },
-        "required": ["referenceId"]
+        "required": [
+          "referenceId"
+        ]
       },
       "AssetDto": {
         "type": "object",
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["link", "image", "audio", "video"]
+            "enum": [
+              "link",
+              "image",
+              "audio",
+              "video"
+            ]
           },
           "references": {
             "type": "array",
@@ -354,14 +517,19 @@
             "minLength": 1
           }
         },
-        "required": ["type"]
+        "required": [
+          "type"
+        ]
       },
       "TagDto": {
         "type": "object",
         "properties": {
           "type": {
             "type": "string",
-            "enum": ["mention", "hashtag"]
+            "enum": [
+              "mention",
+              "hashtag"
+            ]
           },
           "name": {
             "type": "string",
@@ -373,7 +541,9 @@
             "pattern": "DSNP_USER_URI_REGEX"
           }
         },
-        "required": ["type"]
+        "required": [
+          "type"
+        ]
       },
       "LocationDto": {
         "type": "object",
@@ -402,10 +572,19 @@
           },
           "units": {
             "type": "string",
-            "enum": ["cm", "m", "km", "inches", "feet", "miles"]
+            "enum": [
+              "cm",
+              "m",
+              "km",
+              "inches",
+              "feet",
+              "miles"
+            ]
           }
         },
-        "required": ["name"]
+        "required": [
+          "name"
+        ]
       },
       "NoteActivityDto": {
         "type": "object",
@@ -437,7 +616,10 @@
             "$ref": "#/components/schemas/LocationDto"
           }
         },
-        "required": ["content", "published"]
+        "required": [
+          "content",
+          "published"
+        ]
       },
       "BroadcastDto": {
         "type": "object",
@@ -446,7 +628,9 @@
             "$ref": "#/components/schemas/NoteActivityDto"
           }
         },
-        "required": ["content"]
+        "required": [
+          "content"
+        ]
       },
       "AnnouncementResponseDto": {
         "type": "object",
@@ -455,7 +639,9 @@
             "type": "string"
           }
         },
-        "required": ["referenceId"]
+        "required": [
+          "referenceId"
+        ]
       },
       "ReplyDto": {
         "type": "object",
@@ -468,7 +654,10 @@
             "$ref": "#/components/schemas/NoteActivityDto"
           }
         },
-        "required": ["inReplyTo", "content"]
+        "required": [
+          "inReplyTo",
+          "content"
+        ]
       },
       "ReactionDto": {
         "type": "object",
@@ -488,7 +677,11 @@
             "pattern": "DSNP_CONTENT_URI_REGEX"
           }
         },
-        "required": ["emoji", "apply", "inReplyTo"]
+        "required": [
+          "emoji",
+          "apply",
+          "inReplyTo"
+        ]
       },
       "UpdateDto": {
         "type": "object",
@@ -499,13 +692,20 @@
           },
           "targetAnnouncementType": {
             "type": "string",
-            "enum": ["broadcast", "reply"]
+            "enum": [
+              "broadcast",
+              "reply"
+            ]
           },
           "content": {
             "$ref": "#/components/schemas/NoteActivityDto"
           }
         },
-        "required": ["targetContentHash", "targetAnnouncementType", "content"]
+        "required": [
+          "targetContentHash",
+          "targetAnnouncementType",
+          "content"
+        ]
       },
       "TombstoneDto": {
         "type": "object",
@@ -516,10 +716,16 @@
           },
           "targetAnnouncementType": {
             "type": "string",
-            "enum": ["broadcast", "reply"]
+            "enum": [
+              "broadcast",
+              "reply"
+            ]
           }
         },
-        "required": ["targetContentHash", "targetAnnouncementType"]
+        "required": [
+          "targetContentHash",
+          "targetAnnouncementType"
+        ]
       },
       "ProfileActivityDto": {
         "type": "object",
@@ -558,7 +764,9 @@
             "$ref": "#/components/schemas/ProfileActivityDto"
           }
         },
-        "required": ["profile"]
+        "required": [
+          "profile"
+        ]
       }
     }
   }

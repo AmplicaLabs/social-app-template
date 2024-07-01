@@ -1,20 +1,10 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/api/health": {
-      "get": {
-        "operationId": "ApiController_health",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/resetScanner": {
+    "/v1/scanner/reset": {
       "post": {
-        "operationId": "ApiController_resetScanner",
+        "operationId": "ScanControllerV1_resetScanner",
+        "summary": "Reset blockchain scan to a specific block number or offset from the current position",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -29,21 +19,38 @@
         },
         "responses": {
           "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "v1/scanner"
+        ]
+      }
+    },
+    "/v1/scanner/options": {
+      "get": {
+        "operationId": "ScanControllerV1_getWatchOptions",
+        "summary": "Get the current watch options for the blockchain content event scanner",
+        "parameters": [],
+        "responses": {
+          "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/ChainWatchOptionsDto"
                 }
               }
             }
           }
-        }
-      }
-    },
-    "/api/setWatchOptions": {
+        },
+        "tags": [
+          "v1/scanner"
+        ]
+      },
       "post": {
-        "operationId": "ApiController_setWatchOptions",
+        "operationId": "ScanControllerV1_setWatchOptions",
+        "summary": "Set watch options to filter the blockchain content scanner by schemas or MSA IDs",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -60,23 +67,31 @@
           "201": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "v1/scanner"
+        ]
       }
     },
-    "/api/pauseScanner": {
+    "/v1/scanner/pause": {
       "post": {
-        "operationId": "ApiController_pauseScanner",
+        "operationId": "ScanControllerV1_pauseScanner",
+        "summary": "Pause the blockchain scanner",
         "parameters": [],
         "responses": {
           "201": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "v1/scanner"
+        ]
       }
     },
-    "/api/startScanner": {
+    "/v1/scanner/start": {
       "post": {
-        "operationId": "ApiController_startScanner",
+        "operationId": "ScanControllerV1_startScanner",
+        "summary": "Resume the blockchain content event scanner",
         "parameters": [
           {
             "name": "immediate",
@@ -92,12 +107,16 @@
           "201": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "v1/scanner"
+        ]
       }
     },
-    "/api/search": {
-      "put": {
-        "operationId": "ApiController_search",
+    "/v1/search": {
+      "post": {
+        "operationId": "SearchControllerV1_search",
+        "summary": "Search for DSNP content by id, start/end block, and filters",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -121,16 +140,20 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "v1/search"
+        ]
       }
     },
-    "/api/registerWebhook": {
+    "/v1/webhooks": {
       "put": {
-        "operationId": "ApiController_registerWebhook",
+        "operationId": "WebhookControllerV1_registerWebhook",
+        "summary": "Register a webhook to be called when new content is encountered on the chain",
         "parameters": [],
         "requestBody": {
           "required": true,
-          "description": "Register a webhook to be called when a new content is created",
+          "description": "Register a webhook to be called when a new content is encountered",
           "content": {
             "application/json": {
               "schema": {
@@ -143,23 +166,27 @@
           "200": {
             "description": ""
           }
-        }
-      }
-    },
-    "/api/clearAllWebHooks": {
+        },
+        "tags": [
+          "v1/webhooks"
+        ]
+      },
       "delete": {
-        "operationId": "ApiController_clearAllWebHooks",
+        "operationId": "WebhookControllerV1_clearAllWebHooks",
+        "summary": "Clear all previously registered webhooks",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
-      }
-    },
-    "/api/getRegisteredWebhooks": {
+        },
+        "tags": [
+          "v1/webhooks"
+        ]
+      },
       "get": {
-        "operationId": "ApiController_getRegisteredWebhooks",
+        "operationId": "WebhookControllerV1_getRegisteredWebhooks",
+        "summary": "Get the list of currently registered webhooks",
         "parameters": [],
         "responses": {
           "200": {
@@ -175,7 +202,55 @@
               }
             }
           }
-        }
+        },
+        "tags": [
+          "v1/webhooks"
+        ]
+      }
+    },
+    "/healthz": {
+      "get": {
+        "operationId": "HealthController_healthz",
+        "summary": "Check the health status of the service",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is healthy"
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/livez": {
+      "get": {
+        "operationId": "HealthController_livez",
+        "summary": "Check the live status of the service",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is live"
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/readyz": {
+      "get": {
+        "operationId": "HealthController_readyz",
+        "summary": "Check the ready status of the service",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is ready"
+          }
+        },
+        "tags": [
+          "health"
+        ]
       }
     }
   },
@@ -207,6 +282,7 @@
         "properties": {
           "blockNumber": {
             "type": "number",
+            "minimum": 1,
             "description": "The block number to reset the scanner to",
             "example": 0
           },

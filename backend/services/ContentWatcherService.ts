@@ -46,13 +46,13 @@ export class ContentWatcherService {
 
   public async registerWebhook(url: string, announcementTypes: AnnouncementType[]) {
     try {
-      let registeredWebhooks = await this.client.ApiController_getRegisteredWebhooks();
+      let registeredWebhooks = await this.client.WebhookControllerV1_getRegisteredWebhooks();
       logger.debug(registeredWebhooks.data, 'Currently registered webhooks for content-watcher-service:');
-      await this.client.ApiController_registerWebhook(null, {
+      await this.client.WebhookControllerV1_registerWebhook(null, {
         url,
         announcementTypes: announcementTypes.map((prop) => AnnouncementType[prop].toLowerCase()),
       });
-      registeredWebhooks = await this.client.ApiController_getRegisteredWebhooks();
+      registeredWebhooks = await this.client.WebhookControllerV1_getRegisteredWebhooks();
       logger.debug(registeredWebhooks.data, 'Updated registered webhooks for content-watcher-service:');
     } catch (err) {
       logger.error(err, 'Error registering content-watcher webhook');
@@ -61,7 +61,7 @@ export class ContentWatcherService {
 
   public async resetScanner(options: ResetScannerDto) {
     try {
-      await this.client.ApiController_resetScanner(null, options);
+      await this.client.ScanControllerV1_resetScanner(null, options);
     } catch (err) {
       logger.error(err, 'Error resetting content-watcher scan');
     }

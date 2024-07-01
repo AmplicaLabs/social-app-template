@@ -55,7 +55,7 @@ export class GraphService {
       graphKeyPairs: [],
     };
     logger.debug({ msaId, graphsQueryParamsDto }, 'GraphService: getPublicFollows: data from API call');
-    const resp = await this.client.ApiController_getGraphs(null, graphsQueryParamsDto);
+    const resp = await this.client.GraphControllerV1_getGraphs(null, graphsQueryParamsDto);
     const userGraphDto: UserGraphDto[] = resp.data;
     const followList: string[] = userGraphDto
       .map((userGraph) => userGraph.dsnpGraphEdges?.map((edge) => edge.userId.toString()))
@@ -87,7 +87,7 @@ export class GraphService {
         ],
       },
     };
-    const resp = await this.client.ApiController_updateGraph(null, providerGraphDto);
+    const resp = await this.client.GraphControllerV1_updateGraph(null, providerGraphDto);
     // Here we get the reference Id from the BullMQ worker queue
     // We can setup a webhook to listen for the response when the block with this txn is finalized
     // REMOVE: For now we will just assume that the transaction is successful in about 14 seconds
@@ -109,7 +109,7 @@ export class GraphService {
         ],
       },
     };
-    const resp = await this.client.ApiController_updateGraph(null, providerGraphDto);
+    const resp = await this.client.GraphControllerV1_updateGraph(null, providerGraphDto);
     // Here we get the reference Id from the BullMQ worker queue
     // We can setup a webhook to listen for the response when the block with this txn is finalized
     // REMOVE: For now we will just assume that the transaction is successful in about 14 seconds

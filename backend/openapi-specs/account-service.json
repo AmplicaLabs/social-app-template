@@ -1,22 +1,7 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/api/health": {
-      "get": {
-        "operationId": "ApiController_health",
-        "summary": "Check the health status of the service",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Service is healthy"
-          }
-        },
-        "tags": [
-          "api"
-        ]
-      }
-    },
-    "/accounts/siwf": {
+    "/v1/accounts/siwf": {
       "get": {
         "operationId": "AccountsController_getSIWFConfig",
         "summary": "Get the Sign-In With Frequency Configuration",
@@ -34,7 +19,7 @@
           }
         },
         "tags": [
-          "accounts"
+          "v1/accounts"
         ]
       },
       "post": {
@@ -64,11 +49,11 @@
           }
         },
         "tags": [
-          "accounts"
+          "v1/accounts"
         ]
       }
     },
-    "/accounts/{msaId}": {
+    "/v1/accounts/{msaId}": {
       "get": {
         "operationId": "AccountsController_getAccount",
         "summary": "Fetch an account given an msaId.",
@@ -78,7 +63,7 @@
             "required": true,
             "in": "path",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -95,11 +80,11 @@
           }
         },
         "tags": [
-          "accounts"
+          "v1/accounts"
         ]
       }
     },
-    "/delegation/{msaId}": {
+    "/v1/delegation/{msaId}": {
       "get": {
         "operationId": "DelegationController_getDelegation",
         "summary": "Get the delegation information associated with an msaId.",
@@ -109,7 +94,7 @@
             "required": true,
             "in": "path",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -119,11 +104,85 @@
           }
         },
         "tags": [
-          "delegation"
+          "v1/delegation"
         ]
       }
     },
-    "/keys/add": {
+    "/v1/handles": {
+      "post": {
+        "operationId": "HandlesController_createHandle",
+        "summary": "Request to create a new handle for an account",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HandleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Handle creation request enqueued"
+          }
+        },
+        "tags": [
+          "v1/handles"
+        ]
+      }
+    },
+    "/v1/handles/change": {
+      "post": {
+        "operationId": "HandlesController_changeHandle",
+        "summary": "Request to change a handle",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HandleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Handle change request enqueued"
+          }
+        },
+        "tags": [
+          "v1/handles"
+        ]
+      }
+    },
+    "/v1/handles/{msaId}": {
+      "get": {
+        "operationId": "HandlesController_getHandle",
+        "summary": "Fetch a handle given an msaId.",
+        "parameters": [
+          {
+            "name": "msaId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Found a handle"
+          }
+        },
+        "tags": [
+          "v1/handles"
+        ]
+      }
+    },
+    "/v1/keys/add": {
       "post": {
         "operationId": "KeysController_addKey",
         "summary": "add new control keys for an MSA ID",
@@ -144,11 +203,11 @@
           }
         },
         "tags": [
-          "keys"
+          "v1/keys"
         ]
       }
     },
-    "/keys/{msaId}": {
+    "/v1/keys/{msaId}": {
       "get": {
         "operationId": "KeysController_getKeys",
         "summary": "Fetch public keys given an msaId.",
@@ -158,7 +217,7 @@
             "required": true,
             "in": "path",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -168,81 +227,52 @@
           }
         },
         "tags": [
-          "keys"
+          "v1/keys"
         ]
       }
     },
-    "/handles": {
-      "post": {
-        "operationId": "HandlesController_createHandle",
-        "summary": "Request to create a new handle for an account",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HandleRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Handle created successfully"
-          }
-        },
-        "tags": [
-          "handles"
-        ]
-      }
-    },
-    "/handles/change": {
-      "post": {
-        "operationId": "HandlesController_changeHandle",
-        "summary": "Request to change a handle",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HandleRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Handle changed successfully"
-          }
-        },
-        "tags": [
-          "handles"
-        ]
-      }
-    },
-    "/handles/{msaId}": {
+    "/healthz": {
       "get": {
-        "operationId": "HandlesController_getHandle",
-        "summary": "Fetch a handle given an msaId.",
-        "parameters": [
-          {
-            "name": "msaId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
+        "operationId": "HealthController_healthz",
+        "summary": "Check the health status of the service",
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "Found account"
+            "description": "Service is healthy"
           }
         },
         "tags": [
-          "handles"
+          "health"
+        ]
+      }
+    },
+    "/livez": {
+      "get": {
+        "operationId": "HealthController_livez",
+        "summary": "Check the live status of the service",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is live"
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/readyz": {
+      "get": {
+        "operationId": "HealthController_readyz",
+        "summary": "Check the ready status of the service",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is ready"
+          }
+        },
+        "tags": [
+          "health"
         ]
       }
     }
@@ -292,17 +322,8 @@
       "AccountResponse": {
         "type": "object",
         "properties": {
-          "accessToken": {
-            "type": "string"
-          },
-          "expires": {
-            "type": "number"
-          },
-          "referenceId": {
-            "type": "string"
-          },
           "msaId": {
-            "type": "number"
+            "type": "string"
           },
           "displayHandle": {
             "type": "string"
@@ -424,11 +445,45 @@
           "referenceId"
         ]
       },
+      "HandlePayload": {
+        "type": "object",
+        "properties": {
+          "baseHandle": {
+            "type": "string"
+          },
+          "expiration": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "baseHandle",
+          "expiration"
+        ]
+      },
+      "HandleRequest": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/HandlePayload"
+          },
+          "proof": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accountId",
+          "payload",
+          "proof"
+        ]
+      },
       "KeysRequestPayload": {
         "type": "object",
         "properties": {
           "msaId": {
-            "type": "number"
+            "type": "string"
           },
           "expiration": {
             "type": "number"
@@ -464,40 +519,6 @@
           "msaOwnerSignature",
           "newKeyOwnerSignature",
           "payload"
-        ]
-      },
-      "HandlePayload": {
-        "type": "object",
-        "properties": {
-          "baseHandle": {
-            "type": "string"
-          },
-          "expiration": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "baseHandle",
-          "expiration"
-        ]
-      },
-      "HandleRequest": {
-        "type": "object",
-        "properties": {
-          "accountId": {
-            "type": "string"
-          },
-          "payload": {
-            "$ref": "#/components/schemas/HandlePayload"
-          },
-          "proof": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "accountId",
-          "payload",
-          "proof"
         ]
       }
     }

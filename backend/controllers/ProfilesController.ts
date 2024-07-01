@@ -17,15 +17,15 @@ export class ProfilesController extends BaseController {
   }
 
   public async getProfile(_req: Request, res: Response) {
-    const Profile: Partial<Profile> = {
+    const profile: Partial<Profile> = {
       fromId: _req.params.msaId,
     };
     // Use account service to get display handle
     const { displayHandle } = await AccountService.getInstance().then((service) =>
       service.getAccount(_req.params.msaId)
     );
-    Profile.displayHandle = displayHandle;
-    return res.status(HttpStatusCode.Ok).send(Profile);
+    profile.displayHandle = displayHandle;
+    return res.status(HttpStatusCode.Ok).send(profile);
   }
 
   public putProfile(_res: Request, res: Response) {

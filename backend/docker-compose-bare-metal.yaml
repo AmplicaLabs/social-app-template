@@ -3,7 +3,6 @@ x-bare-metal-common-environment: &common-environment
   REDIS_URL: 'redis://redis:6379'
   PROVIDER_ID: 1
   PROVIDER_ACCOUNT_SEED_PHRASE: '//Alice'
-  WEBHOOK_BASE_URL: 'http://host.docker.internal:3002/webhooks'
   WEBHOOK_FAILURE_THRESHOLD: 3
   WEBHOOK_RETRY_INTERVAL_SECONDS: 10
   HEALTH_CHECK_MAX_RETRIES: 4
@@ -31,7 +30,7 @@ x-content-watcher-env: &content-watcher-env
   STARTING_BLOCK: 1
   BLOCKCHAIN_SCAN_INTERVAL_MINUTES: 1
   WEBHOOK_FAILURE_THRESHOLD: 4
-  PROVIDER_BASE_URL: 'http://docker.host.internal:3002/webhooks/content-watcher/announcements'
+  PROVIDER_BASE_URL: 'http://host.docker.internal:3002/webhooks/content-watcher/announcements'
 
 x-graph-service-env: &graph-service-env
   DEBOUNCE_SECONDS: 10
@@ -41,7 +40,7 @@ x-graph-service-env: &graph-service-env
 
 x-account-service-env: &account-service-env
   FREQUENCY_HTTP_URL: 'http://localhost:9944'
-  PROVIDER_BASE_URL: 'http://host.docker.internal:3002/webhooks/account-service'
+  WEBHOOK_BASE_URL: 'http://host.docker.internal:3002/webhooks/account-service'
 
 services:
   redis:

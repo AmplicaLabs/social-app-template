@@ -22,7 +22,8 @@ if [ -f .env-saved ]; then
     echo -e "Found saved environment from a previous run:\n"
     cat .env-saved
     echo
-    read -p  "Do you want to re-use the saved paramters? [y/N]: " REUSE_SAVED
+    read -p  "Do you want to re-use the saved paramters? [y]: " REUSE_SAVED
+    REUSE_SAVED=${REUSE_SAVED:-y}
 
     if [[ ${REUSE_SAVED} =~ ^[Yy] ]]
     then
@@ -80,7 +81,7 @@ EOI
         DEFAULT_FREQUENCY_HTTP_URL="https://0.rpc.testnet.amplica.io"
         DEFAULT_PROVIDER_ID="729"
         DEFAULT_PROVIDER_ACCOUNT_SEED_PHRASE="DEFAULT seed phrase needed"
-        DEFAULT_IPFS_VOLUME="/data/ipfs"
+        DEFAULT_IPFS_ENDPOINT="https://ipfs.infura.io:5001"
     else
         echo -e "\nStarting on local..."
         DEFAULT_TESTNET_ENV="local"
@@ -88,8 +89,8 @@ EOI
         DEFAULT_FREQUENCY_HTTP_URL="http://localhost:9944"
         DEFAULT_PROVIDER_ID="1"
         DEFAULT_PROVIDER_ACCOUNT_SEED_PHRASE="//Alice"
-        DEFAULT_IPFS_VOLUME="/data/ipfs"
     fi
+    DEFAULT_IPFS_VOLUME="/data/ipfs"
     DEFAULT_IPFS_ENDPOINT="http://ipfs:5001"
     DEFAULT_IPFS_GATEWAY_URL='https://ipfs.io/ipfs/[CID]'
     DEFAULT_IPFS_BASIC_AUTH_USER=""
@@ -131,7 +132,19 @@ EOI
         ask_and_save IPFS_BASIC_AUTH_USER "Enter the IPFS Basic Auth User" "$DEFAULT_IPFS_BASIC_AUTH_USER"
         ask_and_save IPFS_BASIC_AUTH_SECRET "Enter the IPFS Basic Auth Secret" "$DEFAULT_IPFS_BASIC_AUTH_SECRET"
         ask_and_save IPFS_UA_GATEWAY_URL "Enter the browser-resolveable IPFS Gateway URL" "$DEFAULT_IPFS_UA_GATEWAY_URL"
+    else
+    # Add the IPFS settings to the .env-saved file
+    echo "IPFS_VOLUME=\"$DEFAULT_IPFS_VOLUME\"" >> .env-saved
+    echo "IPFS_ENDPOINT=\"$DEFAULT_IPFS_ENDPOINT\"" >> .env-saved
+    echo "IPFS_GATEWAY_URL=\"$DEFAULT_IPFS_GATEWAY_URL\"" >> .env-saved
+    echo "IPFS_BASIC_AUTH_USER=\"$DEFAULT_IPFS_BASIC_AUTH_USER\"" >> .env-saved
+    echo "IPFS_BASIC_AUTH_SECRET=\"$DEFAULT_IPFS_BASIC_AUTH_SECRET\"" >> .env-saved
+    echo "IPFS_UA_GATEWAY_URL=\"$DEFAULT_IPFS_UA_GATEWAY_URL\"" >> .env-saved
     fi
+
+    # When testing with gateway services it may be useful to use docker containers that have been built locally
+    # Setting `DEV_CONTAINERS` to `true` will use the local docker containers
+    echo "DEV_CONTAINERS=\"false\"" >> .env-saved
 
     ask_and_save "CONTENT_DB_VOLUME" "Enter the location of the Content DB" "${DEFAULT_CONTENT_DB_VOLUME}"
 fi
@@ -152,9 +165,17 @@ then
     cd backend && npm run local:init && cd ..
 fi
 
-# Start all services in detached mode
-echo -e "\nStarting all services..."
-docker compose  --profile backend --profile frontend up -d
+echo "DEV_CONTAINERS:$DEV_CONTAINERS"
+if [[ $DEV_CONTAINERS == "true" ]]
+then
+    # Start specific services in detached mode
+    echo -e "\nStarting services with local docker containers... [DEV_CONTAINERS==true]"
+    docker compose -f docker-compose.yaml -f docker-compose-local.yaml --profile backend --profile frontend up -d
+else
+    # Start all services in detached mode
+    echo -e "\nStarting all services..."
+    docker compose -f docker-compose.yaml --profile backend --profile frontend up -d
+fi
 
 cat << EOI
 

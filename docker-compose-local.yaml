@@ -1,0 +1,35 @@
+services:
+  content-publishing-service-api:
+    image: content-publishing-service:latest
+    platform: linux/arm64
+    pull_policy: never
+
+  content-publishing-service-worker:
+    image: content-publishing-service:latest
+    platform: linux/arm64
+    pull_policy: never
+
+  content-watcher-service:
+    image: content-watcher-service:latest
+    platform: linux/arm64
+    pull_policy: never
+
+  graph-service-api:
+    image: graph-service:latest
+    platform: linux/arm64
+    pull_policy: never
+
+  graph-service-worker:
+    image: graph-service:latest
+    platform: linux/arm64
+    pull_policy: never
+
+  account-service-api:
+    image: account-service:latest
+    platform: linux/arm64
+    pull_policy: never
+
+  account-service-worker:
+    image: account-service:latest
+    platform: linux/arm64
+    pull_policy: never

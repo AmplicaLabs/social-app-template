@@ -1,11 +1,11 @@
 import { Client as GraphServiceWebhookClient } from '../types/openapi-graph-service';
-import { GraphChangeNotification, GraphOperationStatus } from '../types/graph-service-webhook';
 import { OpenAPIClientAxios, type Document } from 'openapi-client-axios';
 import openapiJson from '../openapi-specs/account-service.json' assert { type: 'json' };
 import * as Config from '../config/config';
 import { HttpStatusCode } from 'axios';
 import logger from '../logger';
 import { HttpError } from '../types/HttpError';
+import { GraphChangeNotificationV1, GraphOperationStatusV1 } from '../types/graph-service-webhook';
 
 export class GraphWebhookService {
   private static instance: GraphWebhookService;
@@ -52,8 +52,8 @@ export class GraphWebhookService {
     return this._client;
   }
 
-  public processGraphUpdateNotification({ msaId, update }: GraphChangeNotification) {
-    logger.debug({ msaId, update }, 'Received graph update notification');
+  public processGraphUpdateNotification(update: GraphChangeNotificationV1) {
+    logger.debug(update, 'Received graph update notification');
     return HttpStatusCode.Ok;
   }
 
@@ -62,7 +62,7 @@ export class GraphWebhookService {
    * @param _req - The request object, contains the on-chain data from the graph-service for the referenceId.
    * @param res - The response object.
    */
-  public requestRefIdWebhook({ referenceId, status }: GraphOperationStatus) {
+  public requestRefIdWebhook({ referenceId, status }: GraphOperationStatusV1) {
     if (referenceId && status) {
       GraphWebhookService.updateOperationByRefId(referenceId, status);
       logger.debug(`GraphWebhookService:requestRefIdWebhook: received referenceId: ${referenceId}`);

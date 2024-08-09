@@ -141,4 +141,21 @@ export class GraphService {
     GraphWebhookService.updateOperationByRefId(resp.data.referenceId, 'pending');
     return resp.data.referenceId;
   }
+
+  /**
+   * Retrieves the scanner ready status of the graph-service.
+   * @returns A Promise that resolves to a boolean indicating whether the service is ready or not.
+   */
+  public async getReadyStatus(): Promise<boolean> {
+    try {
+      const response = await this.client.HealthController_readyz(null);
+      if (response.status === 200) {
+        logger.debug('graph-service is ready');
+      }
+      return true;
+    } catch (err) {
+      logger.error(err, 'Error getting graph-service ready status');
+      return false;
+    }
+  }
 }

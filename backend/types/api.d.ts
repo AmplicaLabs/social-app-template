@@ -372,7 +372,12 @@ declare namespace Paths {
       msaId: Parameters.MsaId;
     }
     namespace Responses {
-      export interface $201 {}
+      export interface $201 {
+        /**
+         * ReferenceId from the request
+         */
+        referenceId?: string;
+      }
       export type $401 = Components.Responses.UnauthorizedError;
     }
   }
@@ -406,7 +411,12 @@ declare namespace Paths {
       msaId: Parameters.MsaId;
     }
     namespace Responses {
-      export interface $201 {}
+      export interface $201 {
+        /**
+         * ReferenceId from the request
+         */
+        referenceId?: string;
+      }
       export type $401 = Components.Responses.UnauthorizedError;
     }
   }

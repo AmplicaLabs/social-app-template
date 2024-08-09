@@ -25,7 +25,7 @@ then
     docker volume rm ${COMPOSE_PROJECT_NAME}_frontend_node_cache
     if [[ ! $TESTNET_ENV =~ ^[Yy]$ ]]
     then
-        docker volume rm $(basename "$(pwd)" | tr '[:upper:]' '[:lower:]')_chainstorage
+        docker volume rm ${COMPOSE_PROJECT_NAME}_chainstorage
     fi
 else
     echo "Leaving Docker volumes alone."

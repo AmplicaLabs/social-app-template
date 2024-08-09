@@ -23,6 +23,7 @@ import { ContentWatcherService } from './services/ContentWatcherService';
 import { AnnouncementType } from './types/content-announcement';
 import { randomUUID } from 'crypto';
 import { ContentRepository } from './repositories/ContentRepository';
+import { GraphService } from './services/GraphService';
 
 // Support BigInt JSON
 (BigInt.prototype as any).toJSON = function () {
@@ -83,6 +84,14 @@ async function waitForContentWatcherService(service: ContentWatcherService): Pro
   }
 }
 
+async function waitForGraphService(service: GraphService): Promise<void> {
+  let isReady = false;
+  while (!isReady) {
+    isReady = await service.getReadyStatus();
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+}
+
 ContentWatcherService.getInstance().then(async (service) => {
   // content-watcher-service may take a few seconds to start up
   // TODO: readyz should be implemented and wait for microservices to be ready
@@ -100,6 +109,12 @@ ContentWatcherService.getInstance().then(async (service) => {
     blockCount: 14_400,
     webhookUrl: `${Config.instance().webhookBaseUrl}/content-watcher/announcements`,
   });
+});
+
+GraphService.getInstance().then(async (service) => {
+  await waitForGraphService(service);
+
+  service.registerWebhook(`${Config.instance().webhookBaseUrl}/graph-service/notifications`);
 });
 
 // Swagger UI
